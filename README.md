@@ -36,3 +36,16 @@ mvn -pl course-registration-app -am package
 
 ## Test Coverage
 The test suite covers course capacity boundaries, prerequisite validation, alternative prerequisite completion, and state preservation after rejected registrations.
+
+## Jenkins Declarative Pipeline
+
+The root-level `Jenkinsfile` defines a CI pipeline for a Windows Jenkins agent using `bat` steps. All Maven commands execute from the repository root.
+
+**Pipeline stages**
+1. Checkout the source code.
+2. Run `mvn clean test`.
+3. Run `mvn package` only after the test stage succeeds.
+4. Publish JUnit reports from `course-registration-app/target/surefire-reports/TEST-*.xml`.
+5. Archive `course-registration-app/target/*.jar` only when the pipeline succeeds.
+
+**Execution status:** Jenkins is not installed or available in the current environment. The Jenkins pipeline has been defined but has not been executed in Jenkins. Maven build, test and package commands are verified separately in the local environment.
