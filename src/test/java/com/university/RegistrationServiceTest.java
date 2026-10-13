@@ -208,5 +208,55 @@ class RegistrationServiceTest {
         assertEquals(0, student.getTotalCredits());
         assertEquals(30, course.getCurrentEnrollment());
     }
+    
+    @Test
+    void shouldAcceptCS301AsCompletedPrerequisite() {
+        Student student = new Student("S104", "Anita");
+        student.addCompletedPrerequisite("CS301");
+
+        Course course = new Course(
+                "CS401", "Advanced Algorithms", 4, 30, true, "CS301"
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        assertTrue(service.register(student, course));
+        assertTrue(student.isRegistered("CS401"));
+        assertEquals(4, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldAcceptCS3A1AsAlternativeCompletedPrerequisite() {
+        Student student = new Student("S105", "Ravi");
+        student.addCompletedPrerequisite("CS3A1");
+
+        Course course = new Course(
+                "CS401", "Advanced Algorithms", 4, 30, true, "CS301"
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        assertTrue(service.register(student, course));
+        assertTrue(student.isRegistered("CS401"));
+        assertEquals(4, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldRejectWhenNeitherPrerequisiteIsCompletedWithoutChangingState() {
+        Student student = new Student("S106", "Priya");
+
+        Course course = new Course(
+                "CS401", "Advanced Algorithms", 4, 30, true, "CS301"
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        assertFalse(service.register(student, course));
+        assertFalse(student.isRegistered("CS401"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    }
 
 }
