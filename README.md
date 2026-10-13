@@ -49,3 +49,49 @@ The root-level `Jenkinsfile` defines a CI pipeline for a Windows Jenkins agent u
 5. Archive `course-registration-app/target/*.jar` only when the pipeline succeeds.
 
 **Execution status:** Jenkins is not installed or available in the current environment. The Jenkins pipeline has been defined but has not been executed in Jenkins. Maven build, test and package commands are verified separately in the local environment.
+
+
+## Task 6: Kubernetes Deployment with Minikube
+
+### Manifests
+- `deployment.yaml`: Defines an Nginx Deployment using `nginx:1.27` with two initial replicas.
+- `service.yaml`: Exposes the pods through a NodePort Service on port `30080`.
+
+### Deploy and Verify
+```powershell
+minikube status
+kubectl get nodes
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+kubectl get deployments
+kubectl get pods -o wide
+kubectl get services
+minikube service nginx-service --url
+```
+
+### Scaling
+The deployment was scaled from two replicas to three using:
+```powershell
+kubectl scale deployment nginx-deployment --replicas=3
+kubectl rollout status deployment/nginx-deployment
+kubectl get pods
+kubectl get deployments
+```
+
+### Self-Healing
+One running pod was deleted manually:
+```powershell
+kubectl delete pod nginx-deployment-75cc477c85-6npmq
+kubectl get pods
+kubectl get deployments
+```
+
+Kubernetes created a replacement pod, `nginx-deployment-75cc477c85-4974f`, and restored the deployment to three running replicas.
+
+### Observed Results
+- Minikube node status: Ready.
+- Initial deployment: 2/2 replicas ready.
+- Scaled deployment: 3/3 replicas ready.
+- After pod deletion: replacement pod created and 3/3 replicas restored.
+- Service type: NodePort (`80:30080/TCP`).
+- Nginx browser accessibility: confirm and document the result after testing the service URL.
