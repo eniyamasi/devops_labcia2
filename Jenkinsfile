@@ -2,6 +2,12 @@
 pipeline {
     agent any
 
+    environment {
+    JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21.0.12.1'
+    PATH+JAVA = 'C:\\Program Files\\Java\\jdk-21.0.12.1\\bin'
+    PATH+MAVEN = 'C:\\Tools\\apache-maven-3.10.0-bin\\apache-maven-3.10.0\\bin'
+    }
+    
     options {
         timestamps()
     }
